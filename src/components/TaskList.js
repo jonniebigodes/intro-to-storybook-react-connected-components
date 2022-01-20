@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import Task from "./Task";
 import { useDispatch, useSelector } from "react-redux";
 import { updateTaskState } from "../lib/store";
+
 export default function TaskList({ loading }) {
   // We're retrieving our state from the store
   const tasks = useSelector((state) => {
-    console.log("TaskList.js: state", state);
     const tasksInOrder = [
       ...state.taskbox.tasks.filter((t) => t.state === "TASK_PINNED"),
       ...state.taskbox.tasks.filter((t) => t.state !== "TASK_PINNED"),
