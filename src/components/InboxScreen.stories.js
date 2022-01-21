@@ -64,10 +64,6 @@ Default.play = async ({ canvasElement }) => {
       timeout: 3000,
     }
   );
-  /* await waitForElementToBeRemoved(
-    () => canvas.getByText("You have no tasks"),
-    { timeout: 2000 }
-  ); */
   // Simulates pinning the first task
   await fireEvent.click(canvas.getByLabelText("pinTask-1"));
   // Simulates pinning the third task
