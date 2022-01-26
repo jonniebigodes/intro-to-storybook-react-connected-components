@@ -34,6 +34,10 @@ const Mockstore = configureStore({
 export default {
   component: TaskList,
   title: "TaskList",
+  argTypes: {
+    onArchiveTask: { action: "onArchiveTask" },
+    onPinTask: { action: "onPinTask" },
+  },
   decorators: [(story) => <div style={{ padding: "3rem" }}>{story()}</div>],
 };
 

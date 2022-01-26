@@ -36,7 +36,7 @@ export default function TaskList({ loading }) {
   );
   if (loading) {
     return (
-      <div className="list-items">
+      <div className="list-items" data-testid="loading">
         {LoadingRow}
         {LoadingRow}
         {LoadingRow}
