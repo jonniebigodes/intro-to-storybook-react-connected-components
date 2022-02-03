@@ -1,12 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { rest } from "msw";
-import {
-  fireEvent,
-  within,
-  waitFor,
-  userEvent,
-} from "@storybook/testing-library";
+import { fireEvent, within, waitFor } from "@storybook/testing-library";
 
 import { waitForElementToBeRemoved } from "@testing-library/dom";
 import InboxScreen from "./InboxScreen";
@@ -64,24 +59,24 @@ Default.play = async ({ canvasElement }) => {
 
   await waitForElementToBeRemoved(await canvas.findByTestId("loading"));
   // Waits for the component to be updated based on the store
-  /*  await waitFor(async () => {
+  await waitFor(async () => {
     // Simulates pinning the first task
     await fireEvent.click(canvas.getByLabelText("pinTask-1"));
     // Simulates pinning the third task
     await fireEvent.click(canvas.getByLabelText("pinTask-3"));
-  }); */
+  });
 };
 
 export const Error = Template.bind({});
 Error.parameters = {
   msw: {
-    handlers: {
-      auth: rest.get(
+    handlers: [
+      rest.get(
         "https://jsonplaceholder.typicode.com/todos?userId=1",
         (req, res, ctx) => {
           return res(ctx.status(403));
         }
       ),
-    },
+    ],
   },
 };

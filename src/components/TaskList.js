@@ -4,6 +4,32 @@ import Task from "./Task";
 import { useDispatch, useSelector } from "react-redux";
 import { updateTaskState } from "../lib/store";
 
+// 1st - Separate components + findByTestId
+
+// const LoadingRow = () => (
+//   <div className="loading-item">
+//     <span className="glow-checkbox" />
+//     <span className="glow-text">
+//       <span>Loading</span> <span>cool</span> <span>state</span>
+//     </span>
+//   </div>
+// );
+
+// const LoadingState = () => (
+//   <div className="list-items" data-testid="loading">
+//     <LoadingRow />
+//     <LoadingRow />
+//     <LoadingRow />
+//     <LoadingRow />
+//     <LoadingRow />
+//     <LoadingRow />
+//   </div>
+// )
+
+// 2nd - Testid inside of each loading element inside LoadingRow + findAllByTestId
+
+// 3rd - Add key property to each state wrapper, to invalidate React's comparison algorithm + findByTestId
+
 export default function TaskList({ loading }) {
   // We're retrieving our state from the store
   const tasks = useSelector((state) => {
@@ -36,7 +62,7 @@ export default function TaskList({ loading }) {
   );
   if (loading) {
     return (
-      <div className="list-items" data-testid="loading">
+      <div className="list-items" data-testid="loading" key={"loading"}>
         {LoadingRow}
         {LoadingRow}
         {LoadingRow}
@@ -48,7 +74,7 @@ export default function TaskList({ loading }) {
   }
   if (tasks.length === 0) {
     return (
-      <div className="list-items">
+      <div className="list-items" key={"empty"} data-testid="empty">
         <div className="wrapper-message">
           <span className="icon-check" />
           <div className="title-message">You have no tasks</div>
@@ -59,7 +85,7 @@ export default function TaskList({ loading }) {
   }
 
   return (
-    <div className="list-items">
+    <div className="list-items" data-testid="success" key={"success"}>
       {tasks.map((task) => (
         <Task
           key={task.id}

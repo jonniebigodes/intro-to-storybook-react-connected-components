@@ -57,8 +57,10 @@ const TasksSlice = createSlice({
   // Adds a reducer for the async actions (https://redux-toolkit.js.org/api/createAsyncThunk)
   extraReducers(builder) {
     builder
-      .addCase(fetchTasks.pending, (state, action) => {
+      .addCase(fetchTasks.pending, (state) => {
         state.status = "loading";
+        state.error = null;
+        state.tasks = [];
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.status = "succeeded";
@@ -66,15 +68,18 @@ const TasksSlice = createSlice({
         // Add any fetched posts to the array
         state.tasks = action.payload;
       })
-      .addCase(fetchTasks.rejected, (state, action) => {
+      .addCase(fetchTasks.rejected, (state) => {
         state.status = "failed";
         state.error = "Something went wrong";
+        state.tasks = [];
       });
   },
 });
 
 // The actions contained in the slice are exported for usage in our components
 export const { updateTaskState } = TasksSlice.actions;
+
+//
 
 /*
  * Our app's store configuration goes here.
@@ -85,7 +90,8 @@ const store = configureStore({
   reducer: {
     taskbox: TasksSlice.reducer,
   },
-  devTools: true,
+  // for development purposes only.
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export default store;
