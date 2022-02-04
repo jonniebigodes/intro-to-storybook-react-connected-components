@@ -16,20 +16,33 @@ const ExampleTasks = [
   { ...TaskStories.Default.args.task, id: "6", title: "Task 6" },
 ];
 
-// A super-simple mock of a redux store
-const Mockstore = configureStore({
-  reducer: {
-    taskbox: createSlice({
-      name: "taskbox",
-      initialState: {
-        tasks: [],
-        status: "idle",
-        error: null,
+const Mockstore = ({ tasks, children }) => (
+  <Provider
+    store={configureStore({
+      reducer: {
+        taskbox: createSlice({
+          name: "taskbox",
+          initialState: {
+            tasks: tasks,
+            status: "idle",
+            error: null,
+          },
+          reducers: {
+            updateTaskState: (state, action) => {
+              const { id, newTaskState } = action.payload;
+              const task = state.tasks.findIndex((task) => task.id === id);
+              if (task >= 0) {
+                state.tasks[task].state = newTaskState;
+              }
+            },
+          },
+        }).reducer,
       },
-      reducers: {},
-    }).reducer,
-  },
-});
+    })}
+  >
+    {children}
+  </Provider>
+);
 
 export default {
   component: TaskList,
@@ -45,6 +58,47 @@ const Template = (args) => <TaskList {...args} />;
 
 export const Default = Template.bind({});
 Default.decorators = [
+  (story) => <Mockstore tasks={ExampleTasks}>{story()}</Mockstore>,
+];
+
+export const WithPinnedTasks = Template.bind({});
+WithPinnedTasks.decorators = [
+  (story) => {
+    const pinnedtasks = [
+      ...ExampleTasks.slice(0, 5),
+      { id: "6", title: "Task 6 (pinned)", state: "TASK_PINNED" },
+    ];
+    return <Mockstore tasks={pinnedtasks}>{story()}</Mockstore>;
+  },
+];
+
+export const Loading = Template.bind({});
+Loading.decorators = [(story) => <Mockstore tasks={[]}>{story()}</Mockstore>];
+
+Loading.args = {
+  loading: true,
+};
+
+export const Empty = Template.bind({});
+// Tasklist is already a connected component and we're not using the args anymore
+Empty.decorators = [(story) => <Mockstore tasks={[]}>{story()}</Mockstore>];
+
+// A super-simple mock of a redux store
+/* const Mockstore = configureStore({
+  reducer: {
+    taskbox: createSlice({
+      name: "taskbox",
+      initialState: {
+        tasks: [],
+        status: "idle",
+        error: null,
+      },
+      reducers: {},
+    }).reducer,
+  },
+}); */
+
+/* Default.decorators = [
   (story) => (
     <Provider
       store={configureStore({
@@ -72,7 +126,7 @@ Default.decorators = [
       {story()}
     </Provider>
   ),
-];
+]; */
 // Tasklist is already a connected component and we're not using the args anymore
 /* Default.args = {
   // Shaping the stories through args composition.
@@ -87,8 +141,7 @@ Default.decorators = [
   ],
 }; */
 
-export const WithPinnedTasks = Template.bind({});
-WithPinnedTasks.decorators = [
+/* WithPinnedTasks.decorators = [
   (story) => (
     <Provider
       store={configureStore({
@@ -119,7 +172,7 @@ WithPinnedTasks.decorators = [
       {story()}
     </Provider>
   ),
-];
+]; */
 
 // Tasklist is already a connected component and we're not using the args anymore
 /* WithPinnedTasks.args = {
@@ -130,21 +183,6 @@ WithPinnedTasks.decorators = [
     { id: "6", title: "Task 6 (pinned)", state: "TASK_PINNED" },
   ],
 }; */
-
-export const Loading = Template.bind({});
-Loading.decorators = [
-  (story) => <Provider store={Mockstore}>{story()}</Provider>,
-];
-Loading.args = {
-  //tasks: [],
-  loading: true,
-};
-
-export const Empty = Template.bind({});
-// Tasklist is already a connected component and we're not using the args anymore
-Empty.decorators = [
-  (story) => <Provider store={Mockstore}>{story()}</Provider>,
-];
 
 /* Empty.args = {
   // Shaping the stories through args composition.
